@@ -38,7 +38,15 @@ def compter_par(lignes, colonne):
 
 
 def total_par(lignes, colonne_groupe, colonne_valeur):
-    pass #pas compris, puis en voyant ce qui est demandé plus tard plus le temps (il est 11h57)
+
+    resultat = {}
+
+    for ligne in lignes:
+        groupe = ligne[colonne_groupe]
+        valeur = int(ligne[colonne_valeur])
+        resultat[groupe] = resultat.get(groupe, 0) + valeur
+
+    return resultat
 
 
 
@@ -94,10 +102,12 @@ def creation_objet_de_classe_site():
 
 
 def main():
+    # Le nombre de lignes de chacun des quatre fichiers
     nombre_ligne_par_fichier()
     print("")
     print("-"*30)
     print("")
+    # Les cinq objets Site avec leur ancienneté calculée pour 2026
     sites_objets = creation_objet_de_classe_site()
     for site in sites_objets:
         print(f"{site} - Ancienneté : {site.anciennete(annee_actuelle)} ans")
@@ -105,6 +115,7 @@ def main():
     print("-"*30)
     print("")
     print(f"Nombre de réservations par code_site : ")
+    # Le nombre de réservations par code_site, trié du plus grand au plus petit
     reservations_non_triées = compter_par(reservations, "code_site")
     reservations_par_site = sorted(reservations_non_triées.items(),
                                        key=lambda x: x[1],
@@ -117,7 +128,21 @@ def main():
     print("-"*30)
     print("")
 
+    # La quantité totale réservée par code_site, triée du plus grand au plus petit
+    print("Quantité totale réservée par code_site :")
+    quantites_par_site = total_par(reservations, "code_site", "quantite")
+    quantites_par_site = sorted(quantites_par_site.items(),
+                                key=lambda x: x[1],
+                                reverse=True)
+    for site, quantite in quantites_par_site:
+        print(f"{site} : {quantite}")
+
+    print("")
+    print("-"*30)
+    print("")
+
     print(f"Nombre de matériel par état : ")
+    # Le nombre de matériels par etat
     materiel_par_etat = compter_par(materiel, "etat")
     for etat, nb in materiel_par_etat.items():
         print(f"{etat} : {nb}")
@@ -126,6 +151,7 @@ def main():
     print("-"*30)
     print("")
 
+    # Le nombre de valeurs distinctes de categorie dans materiel.csv
     categories = {ligne["categorie"] for ligne in materiel}
     print(f"Nombre de catégories distinctes : {len(categories)}")
 
@@ -133,6 +159,7 @@ def main():
     print("-"*30)
     print("")
 
+    # Le nombre de réservations en cours
     print(f"Nombre de réservations en cours : {len(reservations_en_cours(reservations))}")
 
 if __name__ == "__main__":
